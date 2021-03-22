@@ -39,7 +39,7 @@ async function handler(req, res) {
 export default withIronSession(handler, {
   password: "complex_password_at_least_32_characters_long",
   cookieOptions: {
-    secure: process.env.NODE_ENV === "production",
+    secure: false,
   },
   cookieName: "session"
 });

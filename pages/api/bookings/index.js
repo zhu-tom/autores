@@ -8,9 +8,10 @@ import { connectToDatabase } from '../../../util/mongodb';
 import { withIronSession } from 'next-iron-session';
 
 async function handler(req, res) {
+  await connectToDatabase();
+
   if (req.method === "POST") {
     if (authorize(req, [ACCOUNT_TYPE.PAID, ACCOUNT_TYPE.ADMIN])) {
-      await connectToDatabase();
       const time = moment(req.body.time);
       child_process.exec(`python3 ${path.resolve("./setup.py")} ${req.session.get("user")._id} ${req.body.clubId} ${req.body.timeSlotId} ${time.minute()} ${time.hour()} ${time.subtract(3, "days").date()}`, (err, stdout, stderr) => {
         if (err) {

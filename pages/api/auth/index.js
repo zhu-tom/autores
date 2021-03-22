@@ -1,8 +1,10 @@
 import { withIronSession } from "next-iron-session";
 import bcrypt from 'bcrypt';
 import User from "../../../models/user";
+import { connectToDatabase } from "../../../util/mongodb";
 
 async function handler(req, res) {
+  await connectToDatabase();
   if (req.method === "POST") {
     User.findOne({login: req.body.login}, async function(err, user) {
       if (err) res.status(500).send({error: err});

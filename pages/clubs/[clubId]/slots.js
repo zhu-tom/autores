@@ -51,7 +51,7 @@ export default function Slots({ params }) {
   }
 
   const reserve = ({identifier: timeSlotId, startAt: time}) => {
-    axios.post("/api/bookings", {timeSlotId, clubId, time})
+    axios.post("/api/bookings", {timeSlotId, clubId, time: moment(time).utc().toISOString()})
       .then(res => {
         console.log(res);
       })

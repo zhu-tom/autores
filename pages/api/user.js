@@ -1,10 +1,13 @@
 import { withIronSession } from 'next-iron-session'
 
 
-const handler = (req,res) => {
-  const { password, ...rest } = req.session.get("user");
-
-  res.json(rest);
+function handler(req,res) {
+  const user = req.session.get("user");
+  if (!user) res.status(401).send("unauthorized");
+  else {
+    const {password, ...rest} = user;
+    res.json(rest);
+  }
 };
 
 export default withIronSession(handler, {

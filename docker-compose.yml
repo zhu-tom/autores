@@ -4,10 +4,10 @@ services:
     container_name: app
     restart: always
     build: .
-  ports:
-    - "3000:3000"
-  links:
-    - mongo
+    ports:
+      - "3000:3000"
+    links:
+      - mongo
   mongo:
     container_name: mongo
     image: mongo

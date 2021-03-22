@@ -8,4 +8,5 @@ export const BOOKING_STATE = Object.freeze({
   PENDING: 0,
   BOOKED: 1,
   FAILED: 2,
+  CANCELLED: 3,
 });

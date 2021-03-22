@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import { useUser } from '../../../lib/hooks';
+import Layout from '../../../components/layout';
 
 export function getServerSideProps(context) {
   return {
@@ -10,16 +12,30 @@ export function getServerSideProps(context) {
 
 export default function Slots({ params }) {
   const [data, setData] = React.useState([]);
+  const [booked, setBooked] = React.useState([]);
+  const {clubId} = params;
+  const [ user ] = useUser();
+
+
+  const getBooked = async () => {
+    axios.get(`/api/bookings?userId=${user._id}&clubId=${clubId}`)
+      .then(res => {
+        console.log(res.data.bookings);
+        setBooked(res.data.bookings)
+      });
+  }
 
   React.useEffect(() => {
     const date = moment().add(72, "hours").format("YYYY-MM-DD");
-    axios.get(`https://www.goodlifefitness.com/content/goodlife/en/book-workout/jcr:content/root/responsivegrid/workoutbooking.GetWorkoutSlots.${params.clubId}.${date}.json`)
+    axios.get(`https://www.goodlifefitness.com/content/goodlife/en/book-workout/jcr:content/root/responsivegrid/workoutbooking.GetWorkoutSlots.${clubId}.${date}.json`)
       .then(res => {
         setData(res.data.map.response);
-        console.log(res.data.map.response);
       });
-    
   }, []);
+
+  React.useEffect(() => {
+    if (user) getBooked();
+  }, [user])
 
   const maxRows = data.reduce((prev, {workouts}) => {
     return Math.max(prev, workouts.length);
@@ -34,9 +50,24 @@ export default function Slots({ params }) {
     });
   }
 
+  const reserve = ({identifier: timeSlotId, startAt: time}) => {
+    axios.post("/api/bookings", {timeSlotId, clubId, time})
+      .then(res => {
+        console.log(res);
+      })
+  }
+
+  const cancel = (id) => {
+    axios.delete(`/api/bookings/${id}`)
+      .then(res => {
+        console.log(res);
+        getBooked();
+      })
+  }
+
   return (
-    <div>
-      <h1>Slots</h1>
+    <Layout>
+      <h1 className="text-2xl font-bold">Slots</h1>
       <table>
         <thead>
           <tr>
@@ -50,21 +81,34 @@ export default function Slots({ params }) {
         <tbody>
         {byRow.map((arr, r) => (
           <tr key={`body-${r}`}>
-            {arr.map((row, col) => (
-              <td key={`${r}-${col}`} className={row && ((row.availableSlots && moment(row.startAt).isAfter(moment().add(72, "hours"))) ? "bg-green-500":"bg-red-500")}>
-              {row && 
-              <div >
-                <p>{moment(row.startAt).format("h:mm a") + " - " + moment(row.endAt).format("h:mm a")}</p>
-                <p>{row.availableSlots} spots left</p>
-                <p>{row.identifier}</p>
-              </div>
+            {arr.map((row, col) => {
+              const unopened = row && moment(row.startAt).isAfter(moment().add(72, "hours"));
+              let colour;
+              const alreadyBooked = booked.find(({timeSlotId}) => row && timeSlotId === row.identifier);
+              if (alreadyBooked) {
+                colour = "bg-gray-500 cursor-pointer";  
+              } else {
+                colour = row && ((row.availableSlots && unopened) ? "bg-green-500 hover:bg-green-700 cursor-pointer":"bg-red-500 cursor-not-allowed");
               }
-              </td>
-            ))}
+
+              return (
+                <td key={`${r}-${col}`} >
+                {row && 
+                <div 
+                  onClick={() => unopened && (alreadyBooked ? cancel(alreadyBooked._id) : reserve(row))} 
+                  className={`p-2 m-1 rounded-lg ${colour}`}
+                >
+                  <p>{moment(row.startAt).format("h:mm a") + " - " + moment(row.endAt).format("h:mm a")}</p>
+                  <p>{row.availableSlots} spots</p>
+                </div>
+                }
+                </td>
+              );
+            })}
           </tr>
         ))}
         </tbody>
       </table>
-    </div>
+    </Layout>
   );
 }

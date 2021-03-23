@@ -13,7 +13,7 @@ export default function ClubId({params}) {
   const [data, setData] = React.useState({});
 
   React.useEffect(() => {
-    axios.get(`https://www.goodlifefitness.com/content/experience-fragments/goodlife/header/master/jcr:content/root/responsivegrid/header.GetClubsWithDetails.${clubId}.false.true.2021219.json`)
+    axios.get(`/api/clubs/${clubId}`)
       .then(res => {
         console.log(res.data.map.response[0]);
         setData(res.data.map.response[0]);

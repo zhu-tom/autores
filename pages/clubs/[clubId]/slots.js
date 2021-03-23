@@ -27,7 +27,7 @@ export default function Slots({ params }) {
 
   React.useEffect(() => {
     const date = moment().add(72, "hours").format("YYYY-MM-DD");
-    axios.get(`https://www.goodlifefitness.com/content/goodlife/en/book-workout/jcr:content/root/responsivegrid/workoutbooking.GetWorkoutSlots.${clubId}.${date}.json`)
+    axios.get(`/api/clubs/${clubId}/slots?date=${date}`)
       .then(res => {
         setData(res.data.map.response);
       });

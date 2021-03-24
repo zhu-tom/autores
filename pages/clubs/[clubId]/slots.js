@@ -35,6 +35,7 @@ export default function Slots({ params }) {
   }, []);
 
   React.useEffect(() => {
+    console.log(user);
     if (user) getBooked();
   }, [user])
 

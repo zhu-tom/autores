@@ -17,7 +17,7 @@ async function handler(req, res) {
         timeSlotId: req.body.timeSlotId
       }, (err, doc) => {
         if (err) res.status(500).send({error: err});
-        else if (doc && doc.state === BOOKING_STATE.PENDING || doc.state === BOOKING_STATE.BOOKED) {
+        else if (doc && (doc.state === BOOKING_STATE.PENDING || doc.state === BOOKING_STATE.BOOKED)) {
           return res.status(403).send({error: "already booked"});
         }
         else {

@@ -12,9 +12,14 @@ async function handler(req, res) {
 
   if (req.method === "POST") {
     if (authorize(req, [ACCOUNT_TYPE.PAID, ACCOUNT_TYPE.ADMIN])) {
-      Booking.findOne({userId: req.session.get("user")._id, timeSlotId: req.body.timeSlotId}, (err, doc) => {
+      Booking.findOne({
+        userId: req.session.get("user")._id, 
+        timeSlotId: req.body.timeSlotId
+      }, (err, doc) => {
         if (err) res.status(500).send({error: err});
-        else if (doc) res.status(403).send({error: "already booked"});
+        else if (doc && doc.state === BOOKING_STATE.PENDING || doc.state === BOOKING_STATE.BOOKED) {
+          return res.status(403).send({error: "already booked"});
+        }
         else {
           const time = moment(req.body.time);
           child_process.exec(`python3 ${path.resolve("./setup.py")} ${req.session.get("user")._id} ${req.body.clubId} ${req.body.timeSlotId} ${time.minute()} ${time.hour()} ${time.subtract(3, "days").date()}`, (err, stdout, stderr) => {
@@ -25,11 +30,16 @@ async function handler(req, res) {
               console.log(stderr);
               res.status(500).send({error: stderr});
             } else {
-              new Booking({
-                userId: req.session.get("user")._id,
-                clubId: req.body.clubId,
-                timeSlotId: req.body.timeSlotId
-              }).save(error => {
+              if (doc) {
+                doc.state = BOOKING_STATE.PENDING;
+              } else {
+                doc = new Booking({
+                  userId: req.session.get("user")._id,
+                  clubId: req.body.clubId,
+                  timeSlotId: req.body.timeSlotId
+                });
+              }
+              doc.save(error => {
                 if (error) res.status(500).json({error});
                 else res.status(200).send();
               });

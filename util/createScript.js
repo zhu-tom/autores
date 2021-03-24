@@ -18,6 +18,11 @@ db = client["autores"]
 col = db["bookings"]
 query = {"userId": sys.argv[0][:-3], "timeSlotId": sys.argv[2], "clubId": sys.argv[1]}
 values ={ "$set": {"state": state}}
-col.update_one(query, values)`, 
+col.update_one(query, values)
+cron = CronTab(True)
+for job in cron:
+  if " ".join(sys.argv) in job.command: 
+    cron.remove(job)
+    break`, 
   cb);
 }

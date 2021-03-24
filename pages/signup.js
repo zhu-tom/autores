@@ -5,13 +5,13 @@ import { useUser } from "../lib/hooks";
 
 const Signup = () => {
   const router = useRouter();
-  const [user, {mutate}] = useUser();
+  const {user}= useUser();
 
   useEffect(() => {
     if (user) {
       router.push("/");
     }
-  }, []);
+  }, [user]);
 
   const handleSubmit = e => {
     e.preventDefault();

@@ -14,7 +14,7 @@ export default function Slots({ params }) {
   const [data, setData] = React.useState([]);
   const [booked, setBooked] = React.useState([]);
   const {clubId} = params;
-  const [ user ] = useUser();
+  const { user } = useUser();
 
 
   const getBooked = async () => {
@@ -29,6 +29,7 @@ export default function Slots({ params }) {
     const date = moment().add(72, "hours").format("YYYY-MM-DD");
     axios.get(`/api/clubs/${clubId}/slots?date=${date}`)
       .then(res => {
+        console.log(res.data.map.response);
         setData(res.data.map.response);
       });
   }, []);

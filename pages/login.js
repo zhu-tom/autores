@@ -5,7 +5,7 @@ import { useUser } from "../lib/hooks";
 
 const Login = () => {
   const router = useRouter();
-  const [user] = useUser();
+  const {user} = useUser();
 
   useEffect(() => {
     if (user) {

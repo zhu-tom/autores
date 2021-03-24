@@ -5,12 +5,12 @@ import { useEffect } from 'react';
 import { useUser } from '../lib/hooks';
 
 export default function Home() {
-  const [user] = useUser();
+  const {error} = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) router.push("/login");
-  }, [user]);
+    if (error) router.push("/login");
+  }, [error]);
 
   const logout = () => {
     axios.delete("/api/auth")

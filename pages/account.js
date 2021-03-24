@@ -6,7 +6,7 @@ import Layout from "../components/layout";
 import { useUser } from "../lib/hooks";
 import { ACCOUNT_TYPE } from "../util/types";
 
-const PayPalButton = paypal.Buttons.driver("react", {React, ReactDOM});
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function Account() {
   const { user, error} = useUser();
@@ -16,7 +16,7 @@ export default function Account() {
   
   useEffect(() => {
     if (error) router.push("/login");
-    setIsPaid(user.type === ACCOUNT_TYPE.PAID);
+    else if (user) setIsPaid(user.type === ACCOUNT_TYPE.PAID);
   }, [user])
 
   const logout = () => {
@@ -48,16 +48,24 @@ export default function Account() {
   }
 
   return (
-    <Layout>
-      <button onClick={() => logout()}>Log Out</button>
-      {isPaid ? (
-        <p>Already Paid</p>
-      ) : (
-        <PayPalButton
-          createOrder={createOrder}
-          onApprove={onApprove}
-        />
-      )}
-    </Layout>
+    <PayPalScriptProvider options={
+      {
+        "client-id": "ARwk5QmVh7aLpwlsZ7J-RxcibLuzaJ_TSHoYp2xmiq8RGOVpo_S2ErYXrNRcM8h43JIp5O50UxcnG_vK",
+        currency: "CAD",
+      }
+    }>
+      <Layout>
+        <button className="bg-red-500 rounded-lg py-2 px-3" onClick={() => logout()}>Log Out</button>
+        {isPaid ? (
+          <p>Already Paid</p>
+        ) : (
+          <PayPalButtons
+            createOrder={createOrder}
+            onApprove={onApprove}
+          />
+        )}
+      </Layout>
+    </PayPalScriptProvider>
+    
   );
 }

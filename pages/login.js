@@ -5,10 +5,10 @@ import { useUser } from "../lib/hooks";
 
 const Login = () => {
   const router = useRouter();
-  const {user} = useUser();
+  const {user, error} = useUser();
 
   useEffect(() => {
-    if (user) {
+    if (user && !error) {
       router.push("/");
     }
   }, [user]);

@@ -5,19 +5,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}"
+    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
+    "deploy": "npm run build && pm2 del 0 && pm2 --name autores start npm -- start"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^5.1.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
-    "connect-mongo": "^4.4.0",
     "form-data": "^4.0.0",
     "moment": "^2.29.1",
     "mongoose": "^5.12.1",
     "next": "10.0.9",
     "next-iron-session": "^4.1.12",
-    "passport-local": "^1.0.0",
+    "pm2": "^4.5.5",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "swr": "^0.5.4"

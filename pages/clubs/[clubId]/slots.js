@@ -92,8 +92,8 @@ export default function Slots({ params }) {
             </svg>
           </span>
         </div>
-        <div className="flex justify-center">
-          <table>
+        <div className="flex justify-center max-w-full">
+          <table className="table-auto">
             <thead>
               <tr>
                 {data.map((obj, index) => {

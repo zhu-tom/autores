@@ -9,7 +9,7 @@ async function handler(req, res) {
   if (req.method === "POST") {
     const user = req.session.get("user");
     if (user) {
-      User.updateOne({id: user._id}, {$set: {type: ACCOUNT_TYPE.PAID}}, (err, doc) => {
+      User.updateOne({id: user._id}, {$set: {type: ACCOUNT_TYPE.PAID}}, {upsert: false}, (err, doc) => {
         if (err) res.status(500).send({error: err});
         else {
           doc = doc.toJSON();

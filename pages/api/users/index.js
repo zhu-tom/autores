@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import { ACCOUNT_TYPE } from "../../../util/types";
 import { connectToDatabase } from "../../../util/mongodb";
 import { withIronSession } from 'next-iron-session';
+import axios from "axios";
+import querystring from 'querystring';
 
 async function handler(req, res) {
   await connectToDatabase();
@@ -13,25 +15,39 @@ async function handler(req, res) {
       if (err) return res.status(500).send({error: err});
       else if (doc) return res.status(403).send({error: "User already exists."});
       else {
-        bcrypt.hash(req.body.password, 10, (error, hash) => {
-          if (error) return res.status(500).send({error});
-          else {
-            new User({login: req.body.login, password: hash}).save((errors, user) => {
-              if (errors) return res.status(500).send({error: errors});
+        axios.post("https://www.goodlifefitness.com/content/experience-fragments/goodlife/header/master/jcr:content/root/responsivegrid/header.AuthenticateMember.json", 
+          querystring.stringify({
+            "login": req.body.login, 
+            "passwordParameter": req.body.password,
+          }), {
+            headers: {
+              "Content-type": "application/x-www-form-urlencoded",
+            }
+          })
+          .then(result => {
+            bcrypt.hash(req.body.password, 10, (error, hash) => {
+              if (error) return res.status(500).send({error});
               else {
-                createScript(user.id, req.body.login, req.body.password, async e => {
-                  if (e) return res.status(500).send({error: e});
+                new User({login: req.body.login, password: hash}).save((errors, user) => {
+                  if (errors) return res.status(500).send({error: errors});
                   else {
-                    const {password, ...rest} = user.toJSON();
-                    req.session.set("user", rest);
-                    await req.session.save();
-                    return res.json(rest);
+                    createScript(user.id, req.body.login, req.body.password, async e => {
+                      if (e) return res.status(500).send({error: e});
+                      else {
+                        const {password, ...rest} = user.toJSON();
+                        req.session.set("user", rest);
+                        await req.session.save();
+                        return res.json(rest);
+                      }
+                    });
                   }
                 });
               }
             });
-          }
-        });
+          })
+          .catch(error => {
+            res.status(500).send({error});
+          });
       }
     });
   }

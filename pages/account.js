@@ -22,6 +22,7 @@ export default function Account() {
   const logout = () => {
     axios.delete("/api/auth")
       .then(() => {
+        mutate({});
         router.push("/login");
       })
   }
@@ -55,7 +56,7 @@ export default function Account() {
       }
     }>
       <Layout>
-        <button className="bg-red-500 rounded-lg py-2 px-3 text-white" onClick={() => logout()}>Logut</button>
+        <button className="bg-red-500 rounded-lg py-2 px-3 text-white" onClick={() => logout()}>Logout</button>
         {isPaid ? (
           <p>Already Paid</p>
         ) : (

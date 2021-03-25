@@ -6,7 +6,7 @@ import Layout from '../components/layout';
 import { useUser } from '../lib/hooks';
 
 export default function Home() {
-  const {error} = useUser();
+  const {error, mutate} = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -16,6 +16,7 @@ export default function Home() {
   const logout = () => {
     axios.delete("/api/auth")
       .then(() => {
+        mutate({});
         router.push("/login");
       })
   }

@@ -32,7 +32,7 @@ export default function Account() {
         {
           amount: {
             currency_code: "CAD",
-            value: "5.00"
+            value: "7.00"
           }
         }
       ]

@@ -9,7 +9,7 @@ import { ACCOUNT_TYPE } from "../util/types";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function Account() {
-  const { user, error} = useUser();
+  const { user, error, mutate } = useUser();
   const router = useRouter();
 
   const [isPaid, setIsPaid] = useState(false);
@@ -42,7 +42,7 @@ export default function Account() {
   const onApprove = (data, actions) => {
     return actions.order.capture().then(details => {
       axios.post("/api/payment").then(res => {
-
+        mutate(res.data);
       });
     });
   }
@@ -55,7 +55,7 @@ export default function Account() {
       }
     }>
       <Layout>
-        <button className="bg-red-500 rounded-lg py-2 px-3 text-white" onClick={() => logout()}>Logout</button>
+        <button className="bg-red-500 rounded-lg py-2 px-3 text-white" onClick={() => logout()}>Logut</button>
         {isPaid ? (
           <p>Already Paid</p>
         ) : (

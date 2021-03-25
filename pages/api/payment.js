@@ -12,8 +12,9 @@ async function handler(req, res) {
       User.updateOne({id: user._id}, {$set: {type: ACCOUNT_TYPE.PAID}}, (err, doc) => {
         if (err) res.status(500).send({error: err});
         else {
-          req.session.set("user", doc.toJSON());
-          res.send();
+          doc = doc.toJSON();
+          req.session.set("user", doc);
+          res.send(doc);
         }
       })
     } else {

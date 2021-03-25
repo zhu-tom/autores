@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center h-full">
         <div className="flex-col flex items-center">
           <div className="m-2">
             <Link href="/clubs/105/slots">

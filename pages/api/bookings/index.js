@@ -57,13 +57,38 @@ async function handler(req, res) {
       res.status(401).send({error: "unauthorized"});
     } else {
       let query = {};
+
+      if (req.query.state) {
+        const state = req.query.state.split(",");
+
+        let conditions = [];
+  
+        state.forEach(el => {
+          switch (el) {
+            case "pending":
+              conditions.push(BOOKING_STATE.PENDING);
+              break;
+            case "success":
+              conditions.push(BOOKING_STATE.BOOKED)
+              break;
+            case "failed":
+              conditions.push(BOOKING_STATE.FAILED);
+              break;
+            case "cancelled":
+              conditions.push(BOOKING_STATE.CANCELLED);
+              break;
+            default:
+              break;
+          }
+        });
+
+        query.state = {$in: conditions};
+      }
       
+
       if (req.query.userId) {
         if ((user.type === ACCOUNT_TYPE.PAID && req.query.userId === user._id) || user.type === ACCOUNT_TYPE.ADMIN) {
-          query = {
-            userId: req.query.userId, 
-            state: {$not: {$eq: BOOKING_STATE.CANCELLED}}
-            };
+          query.userId = req.query.userId;            
         } else {
           return res.status(401).send({error: "unauthorized"});
         }

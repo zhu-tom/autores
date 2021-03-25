@@ -1,4 +1,5 @@
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useUser } from "../lib/hooks";
@@ -44,6 +45,9 @@ const Signup = () => {
             <button type="submit" className="bg-blue-500 text-white px-3 py-2 border-2 rounded-lg">Sign Up</button>
           </div>
         </form>
+        <div className="flex justify-center">
+          <p>Already have an account? <Link href="/login"><span className="text-blue-500 hover:text-blue-700 cursor-pointer">Log in.</span></Link></p>
+        </div>
       </div>
     </div>
     

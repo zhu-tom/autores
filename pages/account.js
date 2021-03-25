@@ -55,7 +55,7 @@ export default function Account() {
       }
     }>
       <Layout>
-        <button className="bg-red-500 rounded-lg py-2 px-3" onClick={() => logout()}>Log Out</button>
+        <button className="bg-red-500 rounded-lg py-2 px-3 text-white" onClick={() => logout()}>Logout</button>
         {isPaid ? (
           <p>Already Paid</p>
         ) : (

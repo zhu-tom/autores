@@ -5,7 +5,7 @@ import { useUser } from "../lib/hooks";
 
 const Login = () => {
   const router = useRouter();
-  const {user, error} = useUser();
+  const {user, error, mutate} = useUser();
 
   useEffect(() => {
     if (user && !error) {
@@ -21,6 +21,7 @@ const Login = () => {
       password: e.currentTarget.password.value
     })
       .then(res => {
+        mutate(res.data);
         router.push("/");
       })
       .catch(err => {

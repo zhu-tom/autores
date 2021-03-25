@@ -14,7 +14,7 @@ async function handler(req, res) {
         const {password, ...rest} = user.toJSON();
         req.session.set("user", rest);
         await req.session.save();
-        res.send({user: rest});
+        res.send(rest);
       }
     });
   }

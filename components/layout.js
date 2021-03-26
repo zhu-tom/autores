@@ -1,3 +1,4 @@
+import Footer from "./footer"
 import NavBar from "./navbar"
 
 export default function Layout({children}) {
@@ -7,6 +8,7 @@ export default function Layout({children}) {
       <div className="p-4 max-w-full">
       {children}
       </div>
+      <Footer/>
     </div>
   )
 }

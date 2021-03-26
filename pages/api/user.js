@@ -8,7 +8,7 @@ function handler(req,res) {
     const {password, ...rest} = user;
     res.json(rest);
   }
-};
+}
 
 export default withIronSession(handler, {
   password: "complex_password_at_least_32_characters_long",

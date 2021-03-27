@@ -53,11 +53,11 @@ async function handler(req, res) {
   }
   else if (req.method === "GET") {
     const user = req.session.get("user");
-    if (!user || user.type === ACCOUNT_TYPE.UNPAID) {
+    if (!(user && user.type === ACCOUNT_TYPE.PAID)) {
       res.status(401).send({error: "unauthorized"});
     } else {
       let query = {};
-
+      console.log(req.query.state);
       if (req.query.state) {
         const state = req.query.state.split(",");
 
